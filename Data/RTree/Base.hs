@@ -70,7 +70,8 @@ import           Data.List (maximumBy, minimumBy, partition)
 import qualified Data.List as L (length,map)
 import           Data.Maybe (catMaybes, isJust)
 import qualified Data.Maybe as Maybe (mapMaybe)
-import           Data.Monoid (Monoid, mempty, mappend)
+import           Data.Monoid (Monoid, mempty)
+import           Data.Semigroup (Semigroup(..))
 import           Data.Typeable (Typeable)
 
 import           Control.Applicative ((<$>))
@@ -489,7 +490,9 @@ instance  (Binary a) => Binary (RTree a) where
                         return $! node mbb c
                    _ -> fail "RTree.get: error while decoding RTree"
 
+instance (Semigroup a) => Semigroup (RTree a) where
+    (<>) = unionWith (<>)
 
 instance (Monoid a) => Monoid (RTree a) where
     mempty = empty
-    mappend = unionWith mappend
+    mappend = (<>)
